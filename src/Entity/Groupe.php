@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -16,6 +18,9 @@ use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource(
+    paginationItemsPerPage: 2,
+    paginationMaximumItemsPerPage: 2,
+    paginationClientItemsPerPage: true,
     normalizationContext: ['groups' => ['read:collection']],
     denormalizationContext: ['groups' => ['write:Groupe']],
     operations: [
@@ -29,7 +34,9 @@ use Symfony\Component\Validator\Constraints\Length;
         new Put(),
         new Delete()
     ]
-)]
+    ),
+    ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial'])
+    ]
 class Groupe
 {
     #[ORM\Id]
