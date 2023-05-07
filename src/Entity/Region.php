@@ -2,7 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\RegionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +18,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: RegionRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get(
+            controller: NotFoundAction::class,
+            read: false,
+            output: false,
+            openapiContext: [
+                'summary' => 'hidden'
+            ]
+        ),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ]
+)]
 class Region
 {
     #[ORM\Id]
